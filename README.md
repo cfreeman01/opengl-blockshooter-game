@@ -2,7 +2,7 @@
 
 A simple 2D shooter game made with C++ and OpenGL
 
-![gameplay video](https://media.giphy.com/media/jttArMSD6CXMiv1nkh/giphy.gif)
+![gameplay video](gameplay.gif)
   ## Features
   - :trophy: Award-winning graphics and sound design
   - :skull_and_crossbones: Several unique enemy types
