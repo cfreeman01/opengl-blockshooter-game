@@ -176,6 +176,10 @@ void level::updateEnemies(float dt, glm::vec2 playerPos) {
 			finalBoss->moveBullets(dt);
 		}
 	}
+	//possibly spawn boss
+	if (game.elapsedTime >= bossSpawnTime && finalBoss == nullptr) {
+		finalBoss = new monkeyBoss(game, *Renderer);
+	}
 }
 void level::renderEnemies() {
 	for (int i = 0; i < enemies.size(); i++) {
@@ -196,10 +200,6 @@ void level::increaseDifficulty() {
 	}
 	//increase speed of blocks
 	speed += 10.0;
-
-	if (game.elapsedTime >= bossSpawnTime && finalBoss == nullptr) {
-		finalBoss = new monkeyBoss(game, *Renderer);
-	}
 }
 
 //COLLISION DETECTION
@@ -282,10 +282,16 @@ void level::checkPlayerCollisions(playerObject* Player) {
 
 	//check player/boss collision
 	if (finalBoss != nullptr) {
-		if (checkCollisionSAT(*Player, *finalBoss)) Player->resolveCollision();
+		if (checkCollisionSAT(*Player, *finalBoss)) {
+			Player->resolveCollision();
+			return;
+		}
 		std::vector<gameObject>& bossBullets = finalBoss->getBulletInfo();
 		for (int i = 0; i < bossBullets.size(); i++) {
-			if (checkCollisionSAT(*Player, bossBullets[i])) Player->resolveCollision();
+			if (checkCollisionSAT(*Player, bossBullets[i])) {
+				Player->resolveCollision();
+				return;
+			}
 		}
 	}
 }

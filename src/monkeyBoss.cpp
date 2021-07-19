@@ -155,6 +155,8 @@ monkeyBoss::monkeyBoss(Game& game, SpriteRenderer& renderer): game(game), render
     shader.SetInteger("bossTexture", 0);
     shader.SetVector3f("color", glm::vec3(1.0f, 1.0f, 1.0f));
     glBindVertexArray(0);
+
+    updateTransMatrices();
 }
 
 //render the boss and bullets

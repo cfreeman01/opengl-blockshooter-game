@@ -77,15 +77,16 @@ void Game::Update(float dt)
     Player->moveBullets(dt);
 
     if (State == GAME_ACTIVE) {
-        //update level and detect collisions
-        currentLevel->moveBlocks(dt);
-        currentLevel->updateEnemies(dt, Player->Position);
-        doCollisions();
         //possibly increase difficulty
         if (elapsedTime - lastDifficultyUpdate > 30) { //update difficulty every 30 seconds
             lastDifficultyUpdate = elapsedTime;
             currentLevel->increaseDifficulty();
         }
+
+        //update level and detect collisions
+        currentLevel->moveBlocks(dt);
+        currentLevel->updateEnemies(dt, Player->Position);
+        doCollisions();
     }
 }
 
