@@ -18,22 +18,26 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-//screen width
-const unsigned int SCREEN_WIDTH = 900;
-//screen height
-const unsigned int SCREEN_HEIGHT = 900;
-
-Game game(SCREEN_WIDTH, SCREEN_HEIGHT);
+Game* game = nullptr;
 
 int main()
 {
     glfwInit();
+
+    //get screen dimensions
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* vidmode = glfwGetVideoMode(monitor);
+
+    //set width and height of game window to (approximately) the user's screen height
+    const unsigned int  WINDOW_SIZE = (unsigned int)vidmode->height * 0.85f; 
+    game = new Game(WINDOW_SIZE, WINDOW_SIZE);
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, false);
 
-    GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Game", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "Game", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
     //set up mouse input
@@ -53,32 +57,32 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // OpenGL configuration
-    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    glViewport(0, 0, WINDOW_SIZE, WINDOW_SIZE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     //load shader
     ResourceManager::LoadShader("shaders/spriteVertexShader.vert", "shaders/spriteFragShader.frag", nullptr, "sprite");
-    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(game.Width),
-        static_cast<float>(game.Height), 0.0f, -1.0f, 1.0f);
+    glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(game->Width),
+        static_cast<float>(game->Height), 0.0f, -1.0f, 1.0f);
     ResourceManager::GetShader("sprite").Use().SetMatrix4("projection", projection);
     ResourceManager::GetShader("sprite").SetFloat("alpha", 1.0f);
 
     //initialize sprite renderer
-    game.Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
+    game->Renderer = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 
     //display a "loading" message before initializing the game
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-    float messageSize = 200.0f;
+    float messageSize = game->Width/4.5f;
     ResourceManager::LoadTexture("textures/loading_message.png", true, "loadingMessage");
-    game.Renderer->DrawSprite(ResourceManager::GetTexture("loadingMessage"), 
-        glm::vec2(game.Width / 2 - messageSize / 2, game.Height / 2 - messageSize / 2),
+    game->Renderer->DrawSprite(ResourceManager::GetTexture("loadingMessage"), 
+        glm::vec2(game->Width / 2 - messageSize / 2, game->Height / 2 - messageSize / 2),
         glm::vec2(messageSize, messageSize));
     glfwSwapBuffers(window);
 
     // initialize game
-    game.Init();
+    game->Init();
 
     // deltaTime variables
     float deltaTime = 0.0f;
@@ -94,15 +98,15 @@ int main()
         glfwPollEvents();
 
         //process user input
-        game.ProcessInput(deltaTime);
+        game->ProcessInput(deltaTime);
 
         // update game state
-        game.Update(deltaTime);
+        game->Update(deltaTime);
 
         // render
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        game.Render(deltaTime);
+        game->Render(deltaTime);
 
         glfwSwapBuffers(window);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -122,22 +126,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     if (key >= 0 && key < 1024)
     {
         if (action == GLFW_PRESS)
-            game.Keys[key] = true;
+            game->Keys[key] = true;
         else if (action == GLFW_RELEASE)
-            game.Keys[key] = false;
+            game->Keys[key] = false;
     }
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-    game.mouseX = xpos;
-    game.mouseY = ypos;
+    game->mouseX = xpos;
+    game->mouseY = ypos;
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT) {
-        if (action == GLFW_PRESS) game.mouse1 = true;
-        else if (action == GLFW_RELEASE) game.mouse1 = false;
+        if (action == GLFW_PRESS) game->mouse1 = true;
+        else if (action == GLFW_RELEASE) game->mouse1 = false;
     }
 }
 

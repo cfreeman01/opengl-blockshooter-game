@@ -24,6 +24,7 @@ protected:
 	std::vector<Bullet> bullets;  //currently active bullets fired by the character
 	float fireUpdate = 0.0f;      //elapsed time since last fire
 	float bulletSpeed;
+	float bulletSize;
 
 public:
 	//constructors/destructors

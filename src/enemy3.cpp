@@ -25,7 +25,7 @@ enemy3::enemy3(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color,
 	bulletColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	hp = 3;
-	bulletSpeed = 200;
+	bulletSpeed = game.Width/4.5f;
 }
 
 void enemy3::loadTextures() {

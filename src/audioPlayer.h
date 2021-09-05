@@ -42,7 +42,7 @@ public:
 
     //plays audio from specified file
     void play(const char* filepath) {
-            result = ma_decoder_init_file(filepath, NULL, &decoder);
+            result = ma_decoder_init_file(filepath, &decoderConfig, &decoder);
             if (result != MA_SUCCESS) {
                 std::cout << "could not load audio file " << filepath << std::endl;
                 return;

@@ -29,7 +29,7 @@ private:
 	//enemies
 	float enemySpawnDelay = 4.0f;  //delay between enemy spawns
 	float enemySpawnTime = 0.0f;   //timer to determine when to spawn an enemt
-	float bossSpawnTime = 180.0f;  //time, in seconds, at which the final boss spawns
+	float bossSpawnTime = 120.0f;  //time, in seconds, at which the final boss spawns
 	int enemyLevel = 1; //determines which types of enemies spawn, increases after set inteval
 	monkeyBoss* finalBoss = nullptr;
 public:
