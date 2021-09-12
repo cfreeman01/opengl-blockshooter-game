@@ -1,8 +1,11 @@
 #include "enemy1.h"
+#include "game.h"
+#include "resource_manager.h"
+#include <GLFW/glfw3.h>
 
-//static audio players for this enemy type
-audioPlayer enemy1::shootAudio;
-audioPlayer enemy1::damageAudio;
+SoLoud::Wav enemy1::damageAudio;
+SoLoud::Wav enemy1::deathAudio;
+SoLoud::Wav enemy1::shootAudio;
 
 enemy1::enemy1()
 	: enemy() {}
@@ -24,8 +27,8 @@ enemy1::enemy1(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color,
 
 	finalXPosition = rand() % (game.Width - 40);
 	hp = 3;
-	bulletSpeed = game.Width/1.8f;
-	bulletSize = game.Width/90.0f;
+	bulletSpeed = game.Width / 1.8f;
+	bulletSize = game.Width / 90.0f;
 }
 
 void enemy1::loadTextures()
@@ -37,9 +40,16 @@ void enemy1::loadTextures()
 	ResourceManager::LoadTexture("textures/enemy1_death3.png", true, "enemy1_death3");
 }
 
+void enemy1::loadAudio()
+{
+	damageAudio.load("audio/enemy_hit.wav");
+	deathAudio.load("audio/enemy_death.wav");
+	shootAudio.load("audio/enemy1_gunshot.wav");
+}
+
 bool enemy1::fire(glm::vec2 playerPos)
 {
-	shootAudio.play("audio/enemy1_gunshot.mp3");
+	game->audioEngine->play(shootAudio);
 	bullets.push_back(Bullet(new gameObject(this->Position, glm::vec2(bulletSize), //fire a bullet directly toward the player
 											ResourceManager::GetTexture("bullet"), bulletColor, glm::normalize(playerPos - this->Position)),
 							 renderer, std::vector<glm::vec4>(1, bulletColor)));
@@ -60,15 +70,15 @@ void enemy1::move(float dt, glm::vec2 playerPos)
 
 void enemy1::resolveCollision()
 { //called when player shoots the enemy
-	damageAudio.play("audio/enemy_hit.mp3");
 	hp--;
 	damageTime = glfwGetTime();
 	Color = glm::vec3(1.0f, 0.0f, 0.0f); //change enemy color to indicate damage
 	if (hp == 0)
 	{
-		damageAudio.play("audio/enemy_death.mp3");
+		game->audioEngine->play(deathAudio);
 		deathState = 1;	 //change state to indicate the enemy is dying
 		spriteIndex = 0; //and begin the death animation
 		Sprite = deathSprites[0];
 	}
+	else game->audioEngine->play(damageAudio);
 }

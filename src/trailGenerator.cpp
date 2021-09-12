@@ -1,4 +1,8 @@
 #include "trailGenerator.h"
+#include "gameObject.h"
+#include "shader.h"
+#include "resource_manager.h"
+#include "spriteRenderer.h"
 #include <stdlib.h>
 
 trailGenerator::trailGenerator(): object(nullptr), renderer(nullptr), lifeDecrease(0), updateRate(0) {}

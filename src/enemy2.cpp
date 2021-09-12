@@ -1,8 +1,11 @@
 #include "enemy2.h"
+#include "game.h"
+#include "resource_manager.h"
+#include <GLFW/glfw3.h>
 
-//static audio players for this enemy type
-audioPlayer enemy2::shootAudio;
-audioPlayer enemy2::damageAudio;
+SoLoud::Wav enemy2::damageAudio;
+SoLoud::Wav enemy2::deathAudio;
+SoLoud::Wav enemy2::shootAudio;
 
 enemy2::enemy2()
 	: enemy() {}
@@ -38,9 +41,16 @@ void enemy2::loadTextures()
 	ResourceManager::LoadTexture("textures/enemy2_death3.png", true, "enemy2_death3");
 }
 
+void enemy2::loadAudio(){
+	damageAudio.load("audio/enemy_hit.wav");
+	deathAudio.load("audio/enemy_death.wav");
+	shootAudio.load("audio/enemy2_gunshot.wav");
+}
+
 bool enemy2::fire(glm::vec2 playerPos)
 {
-	shootAudio.play("audio/enemy2_gunshot.mp3");
+	game->audioEngine->play(shootAudio);
+	
 	glm::vec2 diff = glm::normalize(playerPos - this->Position);
 	glm::vec4 diff4 = glm::normalize(glm::vec4(diff, 1.0f, 1.0f));
 	glm::mat4 rotate;
@@ -88,15 +98,15 @@ void enemy2::move(float dt, glm::vec2 playerPos)
 
 void enemy2::resolveCollision()
 {
-	damageAudio.play("audio/enemy_hit.mp3");
 	hp--;
 	damageTime = glfwGetTime();
 	Color = glm::vec3(1.0f, 0.5f, 0.5f); //change enemy color to indicate damage
 	if (hp == 0)
 	{
-		damageAudio.play("audio/enemy_death.mp3");
+		game->audioEngine->play(deathAudio);
 		deathState = 1;	 //change state to indicate the enemy is dying
 		spriteIndex = 0; //and begin the death animation
 		Sprite = deathSprites[0];
 	}
+	else game->audioEngine->play(damageAudio);
 }

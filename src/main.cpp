@@ -3,14 +3,14 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 #include "game.h"
 #include "resource_manager.h"
+#include "spriteRenderer.h"
 
-#define MINIAUDIO_IMPLEMENTATION
-#include "miniaudio.h"
-
-#include <iostream>
+#include "soloud.h"
+#include "soloud_wav.h"
 
 // GLFW function declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);

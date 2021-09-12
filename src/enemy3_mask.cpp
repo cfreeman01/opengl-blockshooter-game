@@ -1,6 +1,12 @@
 #include "enemy3_mask.h"
+#include "trailGenerator.h"
+#include "spriteRenderer.h"
+#include "resource_manager.h"
+#include "game.h"
+#include <GLFW/glfw3.h>
 
-audioPlayer enemy3_mask::damageAudio;
+SoLoud::Wav enemy3_mask::damageAudio;
+SoLoud::Wav enemy3_mask::deathAudio;
 
 enemy3_mask::enemy3_mask()
 	: enemy() { }
@@ -33,6 +39,11 @@ void enemy3_mask::loadTextures() {
 	ResourceManager::LoadTexture("textures/enemy3_maskdeath3.png", true, "maskdeath3");
 }
 
+void enemy3_mask::loadAudio(){
+	damageAudio.load("audio/enemy_hit.wav");
+	deathAudio.load("audio/enemy_death.wav");
+}
+
 //this enemy does not fire projectiles, so these methods do nothing
 bool enemy3_mask::fire(glm::vec2 playerPos) {
 	return false;
@@ -50,16 +61,16 @@ void enemy3_mask::move(float dt, glm::vec2 playerPos) { //move toward the player
 }
 
 void enemy3_mask::resolveCollision() {
-	damageAudio.play("audio/enemy_hit.mp3");
 	hp--;
 	damageTime = glfwGetTime();
 	Color = glm::vec3(1.0f, 0.5f, 0.5f);  //change color to indicate damage
 	if (hp == 0) {
-		damageAudio.play("audio/enemy_death.mp3");
+		game->audioEngine->play(deathAudio);
 		deathState = 1;  //change state to indicate the enemy is dying
 		spriteIndex = 0; //and begin the death animation
 		Sprite = deathSprites[0];
 	}
+	game->audioEngine->play(damageAudio);
 }
 
 void enemy3_mask::Draw() {

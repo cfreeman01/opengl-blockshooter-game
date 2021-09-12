@@ -1,5 +1,15 @@
 #include "level.h"
 #include "monkeyBoss.h"
+#include "blockObject.h"
+#include "playerObject.h"
+#include "healthBlock.h"
+#include "starBlock.h"
+#include "game.h"
+#include "enemy1.h"
+#include "enemy2.h"
+#include "enemy3.h"
+#include "enemy3_mask.h"
+#include "resource_manager.h"
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
@@ -18,6 +28,10 @@ level::level(SpriteRenderer &renderer, Game &game) : game(game)
 	Renderer = &renderer;
 	speed = 30.0f;
 	blockSize = (float)game.playAreaHeight / 15;
+
+	blockCrackAudio.load("audio/block_crack.wav");
+	blockBreakAudio.load("audio/block_break.wav");
+	metalBlockAudio.load("audio/block_unbreakable.wav");
 }
 
 level::~level()
@@ -134,7 +148,6 @@ void level::drawBlocks()
 //ENEMIES-------------------------------
 void level::updateEnemies(float dt, glm::vec2 playerPos)
 {
-	std::cout << enemyLevel << '\n';
 	//update or remove existing enemies
 	for (int i = 0; i < enemies.size(); i++)
 	{
@@ -274,11 +287,11 @@ std::vector<bool> level::checkBulletsCollisions(std::vector<character::Bullet> b
 				if (checkCollisionSAT(**block, *(bulletInfo[i].bullet)))
 				{
 					collisions[i] = true;
-					(*block)->crack(game.gameAudio);
+					(*block)->crack(&game);
 				}
 			}
-			if ((*block)->getDurability() == 0)
-			{							   //if block is destroyed,
+			if ((*block)->getDurability() == 0) //if block is destroyed
+			{						   
 				delete *block;			   //delete it
 				block = row->erase(block); //and erase it from the list
 				if (block == row->end())

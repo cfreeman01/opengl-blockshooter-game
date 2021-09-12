@@ -3,10 +3,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <vector>
-#include "trailGenerator.h"
-#include "gameObject.h"
-#include "audioPlayer.h"
+#include "soloud.h"
+#include "soloud_wav.h"
 
+//FORWARD DECLARATIONS
+class gameObject;
 class SpriteRenderer;
 class playerObject;
 class level;
@@ -56,8 +57,10 @@ public:
     void drawHUD();
     void drawBackground(float dt);
     void renderTimer();
+
     //audio
-    static audioPlayer gameAudio;
+    SoLoud::Soloud* audioEngine = nullptr; //initialize SoLoud
+    SoLoud::Wav restartAudio;
 
     //collisions
     void doCollisions();

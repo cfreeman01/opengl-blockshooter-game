@@ -17,10 +17,9 @@
 #include "enemy1.h"
 #include "enemy2.h"
 #include "enemy3.h"
+#include "enemy3_mask.h"
 
 using namespace std;
-
-audioPlayer Game::gameAudio;
 
 Game::Game(unsigned int width, unsigned int height)
     : State(GAME_ACTIVE), Keys(), Width(width), Height(height)
@@ -54,6 +53,14 @@ void Game::Init()
     enemy3_mask::loadTextures();
     monkeyBoss::loadTextures();
 
+    //load audio files
+    blockObject::loadAudio();
+    enemy1::loadAudio();
+    enemy2::loadAudio();
+    enemy3::loadAudio();
+    enemy3_mask::loadAudio();
+    restartAudio.load("audio/restart.wav");
+
     //initialize player
     glm::vec2 playerSize = glm::vec2(Width / 60.0f);
     glm::vec2 playerVelocity = glm::vec2(Width / 4.0f);
@@ -75,6 +82,10 @@ void Game::Init()
 
     //initialize HUD
     initHUD();
+
+    //initialize audio
+    audioEngine = new SoLoud::Soloud();
+    audioEngine->init();
 }
 
 void Game::Update(float dt)
@@ -233,9 +244,10 @@ void Game::initNumbers()
 void Game::renderTimer()
 {
     //sizes of timer componenets
-    glm::vec2 colonSize = glm::vec2(28.0f, 50.0f);
+
+    glm::vec2 colonSize = glm::vec2(Width/32.0f, Width/18.0f);
     glm::vec2 colonPosition = glm::vec2(Width / 2 - colonSize.x / 2, Height - (Height - playAreaHeight) / 2 - colonSize.y / 2);
-    glm::vec2 numberSize = glm::vec2(50.0f, 50.0f);
+    glm::vec2 numberSize = glm::vec2(Width/18.0f);
     //calculate the digits for the timer
     int minutesTens = ((int)elapsedTime / 60) / 10;
     int minutesOnes = ((int)elapsedTime / 60) % 10;
@@ -259,7 +271,7 @@ void Game::gameOver()
 
 void Game::restart()
 { //after a game over, restart the game
-    gameAudio.play("audio/restart.mp3");
+    audioEngine->play(restartAudio);
     State = GAME_ACTIVE;
     elapsedTime = 0;
     lastDifficultyUpdate = 0;

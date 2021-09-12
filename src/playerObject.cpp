@@ -1,11 +1,10 @@
 #include "playerObject.h"
 #include "game.h"
+#include "spriteRenderer.h"
+#include "resource_manager.h"
 #include <iostream>
 #include <string>
 #include <GLFW/glfw3.h>
-
-audioPlayer playerObject::shootAudio;
-audioPlayer playerObject::collisionAudio;
 
 //CONSTRUCTORS
 playerObject::playerObject()
@@ -29,6 +28,11 @@ playerObject::playerObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm:
 
 	playerTrail = new trailGenerator(*this, renderer, 0.1f, 0.1f, bulletColors);
 	playerTrail->init();
+
+	shootAudio.load("audio/gunshot.wav");
+	damageAudio.load("audio/take_damage.wav");
+	powerupAudio.load("audio/powerup.wav");
+	healthupAudio.load("audio/hp_gain.wav");
 }
 
 playerObject::~playerObject()
@@ -86,8 +90,9 @@ void playerObject::fire(glm::vec2 cursorPos, float dt)
 {
 	if (fireUpdate < fireDelay)
 		return;
-	shootAudio.play("audio/gunshot.mp3");
 	fireUpdate = 0.0;
+
+	SoLoud::handle h = game->audioEngine->play(shootAudio);
 
 	bullets.push_back(Bullet(new gameObject(this->Position, glm::vec2(bulletSize), ResourceManager::GetTexture("bullet"),
 											bulletColors[rand() % bulletColors.size()], glm::normalize(cursorPos - this->Position)),
@@ -104,9 +109,9 @@ void playerObject::resolveCollision()
 	if (glfwGetTime() - damageTime > damageCooldown)
 	{
 		damageTime = glfwGetTime();
-		collisionAudio.play("audio/take_damage.mp3");
 		this->Color = glm::vec3(1.0f, 0.0f, 0.0f); //change color to red to indicate damage
 		hp--;
+		game->audioEngine->play(damageAudio);
 		if (hp == 0)
 		{ //if player dies
 			game->gameOver();
@@ -115,15 +120,15 @@ void playerObject::resolveCollision()
 }
 void playerObject::increaseHP()
 {
-	collisionAudio.play("audio/hp_gain.mp3");
 	if (hp < 3)
 		hp++;
+	game->audioEngine->play(healthupAudio);
 }
 void playerObject::powerUp()
 {								 //picking up a powerup decreases fireDelay,
 	powerupTime = glfwGetTime(); //allowing the player to fire more rapidly
-	collisionAudio.play("audio/powerup.mp3");
 	fireDelay = 0.15f;
+	game->audioEngine->play(powerupAudio);
 }
 
 void playerObject::Draw()

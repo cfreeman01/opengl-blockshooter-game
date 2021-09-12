@@ -1,40 +1,50 @@
 #include "blockObject.h"
 #include "resource_manager.h"
+#include "playerObject.h"
 #include <iostream>
 #include <string>
 
-blockObject::blockObject()
-	: gameObject() { }
+SoLoud::Wav blockObject::crackAudio;
+SoLoud::Wav blockObject::breakAudio;
+SoLoud::Wav blockObject::unbreakableAudio;
 
-blockObject::blockObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer& renderer, bool unbreakable)
-	: gameObject(pos, size, sprite, color, velocity) { 
+blockObject::blockObject()
+	: gameObject() {}
+
+blockObject::blockObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, bool unbreakable)
+	: gameObject(pos, size, sprite, color, velocity)
+{
 	durability = 3;
 	this->unbreakable = unbreakable;
 }
 
-int blockObject::crack(audioPlayer& levelAudio) {
-	if (!unbreakable) {
-		if (durability > 0) durability--;
+int blockObject::crack(Game *game)
+{
+	if (!unbreakable)
+	{
+		if (durability > 0)
+		{
+			durability--;
+			if(durability > 0) game->audioEngine->play(crackAudio);
+			else game->audioEngine->play(breakAudio);
+		}
 
-		//play audio
-		if (durability == 0)
-			levelAudio.play("audio/block_break.mp3");
-		else
-			levelAudio.play("audio/block_crack.mp3");
 		//change texture to reflect new durability
 		std::string newTexture = "block" + std::to_string(durability);
 		Sprite = ResourceManager::GetTexture(newTexture.c_str());
 	}
-	else levelAudio.play("audio/block_unbreakable.mp3");
+	else game->audioEngine->play(unbreakableAudio);
 	return durability;
 }
 
-void blockObject::resolvePlayerCollision(playerObject& Player) {
+void blockObject::resolvePlayerCollision(playerObject &Player)
+{
 	Player.resolveCollision(); //for regular block, simply call the player's resolveCollision function
-	                           //for other block types that spawn pickups, this method has more functionality
+							   //for other block types that spawn pickups, this method has more functionality
 }
 
-void blockObject::loadTextures() {
+void blockObject::loadTextures()
+{
 	ResourceManager::LoadTexture("textures/block_d3.png", true, "block3");
 	ResourceManager::LoadTexture("textures/block_d2.png", true, "block2");
 	ResourceManager::LoadTexture("textures/block_d1.png", true, "block1");
@@ -47,4 +57,11 @@ void blockObject::loadTextures() {
 	ResourceManager::LoadTexture("textures/star_block2.png", true, "starBlock3");
 	ResourceManager::LoadTexture("textures/star_block3.png", true, "starBlock4");
 	ResourceManager::LoadTexture("textures/star.png", true, "star");
+}
+
+void blockObject::loadAudio()
+{
+	crackAudio.load("audio/block_crack.wav");
+	breakAudio.load("audio/block_break.wav");
+	unbreakableAudio.load("audio/block_unbreakable.wav");
 }

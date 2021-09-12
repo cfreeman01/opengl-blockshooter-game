@@ -1,7 +1,8 @@
 #include "monkeyBoss.h"
-
-audioPlayer monkeyBoss::shootAudio;
-audioPlayer monkeyBoss::damageAudio;
+#include "resource_manager.h"
+#include "shader.h"
+#include "game.h"
+#include "level.h"
 
 float vertices[] = { //cube vertices
     -0.1f, -0.1f, -0.1f,
@@ -129,6 +130,13 @@ monkeyBoss::monkeyBoss(Game &game, SpriteRenderer &renderer) : game(game), rende
         deathTextures.push_back(ResourceManager::GetTexture(("discomonke_death" + to_string(i)).c_str()));
     }
 
+    //initialize audio
+    shootAudio.load("audio/boss_fire.wav");
+    damageAudio.load("audio/boss_hit.wav");
+    deathAudio.load("audio/boss_death.wav");
+    bombAudio.load("audio/boss_bananabreak.wav");
+
+    //Initialize opengl objects
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
@@ -275,8 +283,8 @@ void monkeyBoss::fire(float dt, glm::vec2 playerPos)
     fireUpdate += dt;
     if (fireUpdate < fireDelay)
         return;
-    shootAudio.play("audio/boss_fire.mp3");
     fireUpdate = 0.0f;
+    game.audioEngine->play(shootAudio);
 
     glm::vec2 diff = glm::normalize(playerPos - this->Position);
     glm::vec4 diff4 = glm::normalize(glm::vec4(diff, 1.0f, 1.0f));
@@ -324,7 +332,8 @@ void monkeyBoss::spawnBananaBomb(glm::vec2 vel)
 
 void monkeyBoss::explodeBananaBomb(glm::vec2 pos)
 {
-    shootAudio.play("audio/boss_bananabreak.mp3");
+    game.audioEngine->play(bombAudio);
+
     bullets.push_back(gameObject(pos, bulletSize,
                                  ResourceManager::GetTexture("banana1"), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.707f, 0.0f)));
     bullets.push_back(gameObject(pos, bulletSize,
@@ -380,16 +389,16 @@ void monkeyBoss::moveBullets(float dt)
 
 int monkeyBoss::takeDamage()
 {
-    damageAudio.play("audio/boss_hit.mp3");
     hp--;
+    game.audioEngine->play(damageAudio);
     shader.Use();
     shader.SetVector3f("color", glm::vec3(1.0f, 0.0f, 0.0f));
     damageTime = glfwGetTime();
 
     if (hp == 0)
     {
-        game.gameAudio.play("audio/boss_death.mp3");
         deathState = 1; //enter dying state
+        game.audioEngine->play(deathAudio);
     }
 
     return hp;
