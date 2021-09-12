@@ -7,10 +7,11 @@
 #include "soloud_wav.h"
 
 //FORWARD DECLARATIONS
-class gameObject;
+class GameObject;
 class SpriteRenderer;
-class playerObject;
+class Player;
 class level;
+class HUD;
 
 // Represents the current state of the game
 enum GameState {
@@ -27,9 +28,10 @@ class Game
 public:
     GameState               State;
     SpriteRenderer*         Renderer;
-    playerObject*           Player;
-    gameObject*             Cursor;
+    Player*           currentPlayer;
+    GameObject*             Cursor;
     level*                  currentLevel;
+    HUD*                    hud;
     //input
     bool                    Keys[1024];
     bool                    mouse1, mouse2;
@@ -40,23 +42,22 @@ public:
     //timing
     float                   elapsedTime = 0.0f;
     float                   lastDifficultyUpdate = 0.0f; //time at which difficulty was last increased
+
     //background
-    std::vector<gameObject> background;
+    std::vector<GameObject> background;
+    void drawBackground(float dt);
+
     // constructor/destructor
     Game(unsigned int width, unsigned int height);
     ~Game();
+
     // initialize game state (load all shaders/textures/levels)
     void Init();
+    
     // game loop
     void ProcessInput(float dt);
     void Update(float dt);
     void Render(float dt);
-    //HUD and background
-    void initHUD();
-    void initNumbers();
-    void drawHUD();
-    void drawBackground(float dt);
-    void renderTimer();
 
     //audio
     SoLoud::Soloud* audioEngine = nullptr; //initialize SoLoud

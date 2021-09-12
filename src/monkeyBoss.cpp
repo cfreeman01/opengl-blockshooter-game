@@ -95,7 +95,7 @@ unsigned int indices[] = {
 1, 2, 3  // second triangle
 };
 
-void monkeyBoss::loadTextures()
+void MonkeyBoss::loadTextures()
 {
     ResourceManager::LoadTexture("textures/discomonke.png", false, "discomonke");
 
@@ -114,7 +114,7 @@ void monkeyBoss::loadTextures()
 }
 
 //construct and initialize
-monkeyBoss::monkeyBoss(Game &game, SpriteRenderer &renderer) : game(game), renderer(renderer)
+MonkeyBoss::MonkeyBoss(Game &game, SpriteRenderer &renderer) : game(game), renderer(renderer)
 {
     Position = glm::vec2(game.Width + 500.0f, -500.0f);
     Velocity = glm::vec2(-1.0f, 1.0f);
@@ -173,7 +173,7 @@ monkeyBoss::monkeyBoss(Game &game, SpriteRenderer &renderer) : game(game), rende
 }
 
 //render the boss and bullets
-void monkeyBoss::draw()
+void MonkeyBoss::draw()
 {
     shader.Use();
     updateTransMatrices();
@@ -200,7 +200,7 @@ void monkeyBoss::draw()
 }
 
 //movement
-void monkeyBoss::move(float dt)
+void MonkeyBoss::move(float dt)
 {
     Position += speed * dt * glm::normalize(Velocity);
 
@@ -223,7 +223,7 @@ void monkeyBoss::move(float dt)
 }
 
 //return vertices representing the (approximate) collision box for the boss
-std::vector<glm::vec2> monkeyBoss::getVertices()
+std::vector<glm::vec2> MonkeyBoss::getVertices()
 {
     std::vector<glm::vec4> bossVertices; //vector of all boss vertices
     std::vector<glm::vec2> retVertices;  //vector of "outer" vertices to return
@@ -278,7 +278,7 @@ std::vector<glm::vec2> monkeyBoss::getVertices()
 }
 
 //BULLET METHODS------------
-void monkeyBoss::fire(float dt, glm::vec2 playerPos)
+void MonkeyBoss::fire(float dt, glm::vec2 playerPos)
 {
     fireUpdate += dt;
     if (fireUpdate < fireDelay)
@@ -316,39 +316,39 @@ void monkeyBoss::fire(float dt, glm::vec2 playerPos)
         spawnBananaBomb(glm::normalize(glm::vec2(diff4)));
 }
 
-void monkeyBoss::spawnBanana(glm::vec2 vel)
+void MonkeyBoss::spawnBanana(glm::vec2 vel)
 {
-    bullets.push_back(gameObject(this->Position, bulletSize,
+    bullets.push_back(GameObject(this->Position, bulletSize,
                                  ResourceManager::GetTexture("banana1"), glm::vec3(1.0f, 1.0f, 1.0f), vel));
     bombs.push_back(false);
 }
 
-void monkeyBoss::spawnBananaBomb(glm::vec2 vel)
+void MonkeyBoss::spawnBananaBomb(glm::vec2 vel)
 {
-    bullets.push_back(gameObject(this->Position, bulletSize,
+    bullets.push_back(GameObject(this->Position, bulletSize,
                                  ResourceManager::GetTexture("banana3"), glm::vec3(1.0f, 1.0f, 1.0f), vel));
     bombs.push_back(true);
 }
 
-void monkeyBoss::explodeBananaBomb(glm::vec2 pos)
+void MonkeyBoss::explodeBananaBomb(glm::vec2 pos)
 {
     game.audioEngine->play(bombAudio);
 
-    bullets.push_back(gameObject(pos, bulletSize,
+    bullets.push_back(GameObject(pos, bulletSize,
                                  ResourceManager::GetTexture("banana1"), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.707f, 0.0f)));
-    bullets.push_back(gameObject(pos, bulletSize,
+    bullets.push_back(GameObject(pos, bulletSize,
                                  ResourceManager::GetTexture("banana1"), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, 0.707f)));
-    bullets.push_back(gameObject(pos, bulletSize,
+    bullets.push_back(GameObject(pos, bulletSize,
                                  ResourceManager::GetTexture("banana1"), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(-0.707f, 0.0f)));
-    bullets.push_back(gameObject(pos, bulletSize,
+    bullets.push_back(GameObject(pos, bulletSize,
                                  ResourceManager::GetTexture("banana1"), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.0f, -0.707f)));
-    bullets.push_back(gameObject(pos, bulletSize,
+    bullets.push_back(GameObject(pos, bulletSize,
                                  ResourceManager::GetTexture("banana1"), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.5f, 0.5f)));
-    bullets.push_back(gameObject(pos, bulletSize,
+    bullets.push_back(GameObject(pos, bulletSize,
                                  ResourceManager::GetTexture("banana1"), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(-0.5f, 0.5f)));
-    bullets.push_back(gameObject(pos, bulletSize,
+    bullets.push_back(GameObject(pos, bulletSize,
                                  ResourceManager::GetTexture("banana1"), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(0.5f, -0.5f)));
-    bullets.push_back(gameObject(pos, bulletSize,
+    bullets.push_back(GameObject(pos, bulletSize,
                                  ResourceManager::GetTexture("banana1"), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec2(-0.5f, -0.5f)));
     for (int i = 0; i < 8; i++)
     {
@@ -356,7 +356,7 @@ void monkeyBoss::explodeBananaBomb(glm::vec2 pos)
     }
 }
 
-void monkeyBoss::moveBullets(float dt)
+void MonkeyBoss::moveBullets(float dt)
 {
     fireUpdate += dt;
     for (unsigned int i = 0; i < bullets.size(); i++)
@@ -387,7 +387,7 @@ void monkeyBoss::moveBullets(float dt)
 }
 //--------------------------------
 
-int monkeyBoss::takeDamage()
+int MonkeyBoss::takeDamage()
 {
     hp--;
     game.audioEngine->play(damageAudio);
@@ -404,7 +404,7 @@ int monkeyBoss::takeDamage()
     return hp;
 }
 
-void monkeyBoss::updateDeathTexture(float dt)
+void MonkeyBoss::updateDeathTexture(float dt)
 {
     deathUpdateTimer += dt;
     if (!(deathUpdateTimer >= deathUpdateDelay))
@@ -418,12 +418,12 @@ void monkeyBoss::updateDeathTexture(float dt)
     }
 }
 
-std::vector<gameObject> &monkeyBoss::getBulletInfo()
+std::vector<GameObject> &MonkeyBoss::getBulletInfo()
 {
     return bullets;
 }
 
-void monkeyBoss::updateTransMatrices()
+void MonkeyBoss::updateTransMatrices()
 { //update the transformation matrices
     glm::vec2 adjustedPosition = glm::vec2(Position.x - game.Width / 2, Position.y - game.Height / 2);
     adjustedPosition.x /= game.Width;

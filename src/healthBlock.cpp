@@ -1,20 +1,19 @@
 #include "healthBlock.h"
-#include "playerObject.h"
+#include "player.h"
 #include "resource_manager.h"
 
+HealthBlock::HealthBlock()
+	: Block() {}
 
-healthBlock::healthBlock()
-	: blockObject() {}
-
-healthBlock::healthBlock(glm::vec2 pos, glm::vec2 size, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer)
-	: blockObject(pos, size, ResourceManager::GetTexture("healthBlock4"), color, velocity, renderer, false)
+HealthBlock::HealthBlock(glm::vec2 pos, glm::vec2 size, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer)
+	: Block(pos, size, ResourceManager::GetTexture("healthBlock4"), color, velocity, renderer, false)
 {
 	durability = 4; //durability: 4:max, 3,2: cracked
 					//1:block is broken and health can be picked up
 					//0:block destroyed & health pickup gone
 }
 
-int healthBlock::crack(Game* game)
+int HealthBlock::crack(Game *game)
 {
 	if (durability > 1)
 	{ //if block is not broken
@@ -38,7 +37,7 @@ int healthBlock::crack(Game* game)
 	return durability;
 }
 
-void healthBlock::resolvePlayerCollision(playerObject &Player)
+void HealthBlock::resolvePlayerCollision(Player &Player)
 {
 	if (durability == 1)
 	{						 //if health pickup is spawned

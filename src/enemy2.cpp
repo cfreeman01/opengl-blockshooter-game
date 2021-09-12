@@ -3,15 +3,15 @@
 #include "resource_manager.h"
 #include <GLFW/glfw3.h>
 
-SoLoud::Wav enemy2::damageAudio;
-SoLoud::Wav enemy2::deathAudio;
-SoLoud::Wav enemy2::shootAudio;
+SoLoud::Wav Enemy2::damageAudio;
+SoLoud::Wav Enemy2::deathAudio;
+SoLoud::Wav Enemy2::shootAudio;
 
-enemy2::enemy2()
-	: enemy() {}
+Enemy2::Enemy2()
+	: Enemy() {}
 
-enemy2::enemy2(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game)
-	: enemy(pos, size, sprite, color, velocity, renderer, game)
+Enemy2::Enemy2(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game)
+	: Enemy(pos, size, sprite, color, velocity, renderer, game)
 {
 	//textures must be loaded first
 	sprites.push_back(ResourceManager::GetTexture("enemy2_1"));
@@ -31,7 +31,7 @@ enemy2::enemy2(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color,
 	bulletSize = game.Width / 90.0f;
 }
 
-void enemy2::loadTextures()
+void Enemy2::loadTextures()
 {
 	ResourceManager::LoadTexture("textures/enemy2_1.png", true, "enemy2_1");
 	ResourceManager::LoadTexture("textures/enemy2_2.png", true, "enemy2_2");
@@ -41,13 +41,13 @@ void enemy2::loadTextures()
 	ResourceManager::LoadTexture("textures/enemy2_death3.png", true, "enemy2_death3");
 }
 
-void enemy2::loadAudio(){
+void Enemy2::loadAudio(){
 	damageAudio.load("audio/enemy_hit.wav");
 	deathAudio.load("audio/enemy_death.wav");
 	shootAudio.load("audio/enemy2_gunshot.wav");
 }
 
-bool enemy2::fire(glm::vec2 playerPos)
+bool Enemy2::fire(glm::vec2 playerPos)
 {
 	game->audioEngine->play(shootAudio);
 	
@@ -56,7 +56,7 @@ bool enemy2::fire(glm::vec2 playerPos)
 	glm::mat4 rotate;
 
 	//first bullet: follows player directly
-	bullets.push_back(Bullet(new gameObject(this->Position, glm::vec2(bulletSize),
+	bullets.push_back(Bullet(new GameObject(this->Position, glm::vec2(bulletSize),
 											ResourceManager::GetTexture("bullet_circle"), bulletColor, diff),
 							                renderer, std::vector<glm::vec4>(1, bulletColor)));
 	bullets.back().trail.init();
@@ -65,7 +65,7 @@ bool enemy2::fire(glm::vec2 playerPos)
 	rotate = glm::mat4(1.0f);
 	rotate = glm::rotate(rotate, glm::radians(25.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	diff4 = rotate * diff4;
-	bullets.push_back(Bullet(new gameObject(this->Position, glm::vec2(bulletSize),
+	bullets.push_back(Bullet(new GameObject(this->Position, glm::vec2(bulletSize),
 											ResourceManager::GetTexture("bullet_circle"), bulletColor, glm::normalize(glm::vec2(diff4.x, diff4.y))),
 							                renderer, std::vector<glm::vec4>(1, bulletColor)));
 	bullets.back().trail.init();
@@ -75,7 +75,7 @@ bool enemy2::fire(glm::vec2 playerPos)
 	diff4 = glm::normalize(glm::vec4(diff, 1.0f, 1.0f));
 	rotate = glm::rotate(rotate, glm::radians(-25.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	diff4 = rotate * diff4;
-	bullets.push_back(Bullet(new gameObject(this->Position, glm::vec2(bulletSize),
+	bullets.push_back(Bullet(new GameObject(this->Position, glm::vec2(bulletSize),
 											ResourceManager::GetTexture("bullet_circle"), bulletColor, glm::normalize(glm::vec2(diff4.x, diff4.y))),
 							                renderer, std::vector<glm::vec4>(1, bulletColor)));
 	bullets.back().trail.init();
@@ -86,7 +86,7 @@ bool enemy2::fire(glm::vec2 playerPos)
 	return false;
 }
 
-void enemy2::move(float dt, glm::vec2 playerPos)
+void Enemy2::move(float dt, glm::vec2 playerPos)
 { //if distance between enemy and player is >300px, move toward player
 	glm::vec2 diff = playerPos - this->Position;
 	if (glm::length(diff) < 300)
@@ -96,7 +96,7 @@ void enemy2::move(float dt, glm::vec2 playerPos)
 	this->Position += diff * dt;
 }
 
-void enemy2::resolveCollision()
+void Enemy2::resolveCollision()
 {
 	hp--;
 	damageTime = glfwGetTime();

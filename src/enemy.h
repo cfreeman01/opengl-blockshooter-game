@@ -2,7 +2,7 @@
 #include "character.h"
 
 //abstract class that all enemy types inherit from
-class enemy : public character
+class Enemy : public Character
 {
 protected:
 	//sprites
@@ -22,11 +22,13 @@ protected:
 	//collisions
 	int hp;
 	float damageTime = 0.0f; //time at which enemy was last damaged
+
 public:
 	bool updateState(float dt, glm::vec2 playerPos); //update the enemy's state each frame
+
 	//constructors
-	enemy();
-	enemy(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game);
+	Enemy();
+	Enemy(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game);
 
 	//sprites
 	void updateSprite();

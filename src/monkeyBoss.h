@@ -11,7 +11,7 @@
 //FORWARD DECLARATIONS
 class SpriteRenderer;
 
-class monkeyBoss : public gameObject
+class MonkeyBoss : public GameObject
 {
 private:
 	Game &game;
@@ -37,7 +37,7 @@ private:
 	float bulletSpeed;
 	glm::vec2 bulletSize = glm::vec2(game.Width / 30.0f);
 	float bombSpawnTime = 0.0f;			   //the time at which the boss spawns a bomb (explodes 1.5s later)
-	std::vector<gameObject> bullets;	   //active bullets fired by the boss
+	std::vector<GameObject> bullets;	   //active bullets fired by the boss
 	std::vector<bool> bombs;			   //boolean vector to indicate which items in "bullets" are bombs
 	void spawnBanana(glm::vec2 vel);	   //spawn a regular banana (bullet)
 	void spawnBananaBomb(glm::vec2 vel);   //spawn a bomb
@@ -59,7 +59,7 @@ private:
 
 public:
 	//constructor
-	monkeyBoss(Game &game, SpriteRenderer &renderer);
+	MonkeyBoss(Game &game, SpriteRenderer &renderer);
 
 	//rendering
 	void draw();
@@ -74,7 +74,7 @@ public:
 	void fire(float dt, glm::vec2 playerPos);
 	void moveBullets(float dt);
 	int takeDamage();
-		std::vector<gameObject> &getBulletInfo();
+		std::vector<GameObject> &getBulletInfo();
 
 	//damage/hp
 	int getDeathState() { return deathState; }

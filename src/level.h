@@ -10,10 +10,10 @@ using namespace std;
 //FORWARD DECLARATIONS
 class Game;
 class SpriteRenderer;
-class blockObject;
-class enemy;
-class monkeyBoss;
-class playerObject;
+class Block;
+class Enemy;
+class MonkeyBoss;
+class Player;
 
 class level
 {
@@ -22,8 +22,8 @@ private:
 	Game &game;
 
 	//environment obstacles
-	std::list<std::list<blockObject *>> blocks;
-	std::vector<enemy *> enemies;
+	std::list<std::list<Block *>> blocks;
+	std::vector<Enemy *> enemies;
 
 	//block properties
 	float speed;
@@ -34,7 +34,7 @@ private:
 	float enemySpawnTime = 0.0f;  //timer to determine when to spawn an enemt
 	float bossSpawnTime = 120.0f; //time, in seconds, at which the final boss spawns
 	int enemyLevel = 1;			  //determines which types of enemies spawn, increases after set inteval
-	monkeyBoss *finalBoss = nullptr;
+	MonkeyBoss *finalBoss = nullptr;
 
 	//audio
 	SoLoud::Wav blockBreakAudio;
@@ -50,9 +50,9 @@ public:
 	void moveBlocks(float dt);
 	void drawBlocks();
 	//collision detection
-	vector<bool> checkBulletsCollisions(vector<character::Bullet> bulletPositions);
-	void checkPlayerCollisions(playerObject *Player);
-	static bool checkCollisionSAT(gameObject &o1, gameObject &o2);
+	vector<bool> checkBulletsCollisions(vector<Character::Bullet> bulletPositions);
+	void checkPlayerCollisions(Player *currentPlayer);
+	static bool checkCollisionSAT(GameObject &o1, GameObject &o2);
 	static glm::vec2 proj(std::vector<glm::vec2> vertices, glm::vec2 axis);
 	//enemies
 	void updateEnemies(float dt, glm::vec2 playerPos);

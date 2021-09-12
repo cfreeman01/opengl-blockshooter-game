@@ -5,7 +5,7 @@
 #include <vector>
 
 //FORWARD DECLARATIONS
-class gameObject;
+class GameObject;
 class SpriteRenderer;
 
 //represents one trailing object
@@ -23,10 +23,10 @@ struct particle
 };
 
 //used to generate a trail behind a moving object
-class trailGenerator
+class TrailGenerator
 {
 private:
-	gameObject *object; //source object
+	GameObject *object; //source object
 	SpriteRenderer *renderer;
 	std::vector<particle> particles;
 	int firstUnusedIndex();	 //finds index of first 'dead' particle
@@ -35,8 +35,8 @@ private:
 	float updateRate;
 	std::vector<glm::vec4> colors; //colors used to render the particles
 public:
-	trailGenerator();
-	trailGenerator(gameObject &inObject, SpriteRenderer &inRenderer, float ld, float ur, std::vector<glm::vec4> colors);
+	TrailGenerator();
+	TrailGenerator(GameObject &inObject, SpriteRenderer &inRenderer, float ld, float ur, std::vector<glm::vec4> colors);
 	void init();
 	void update(float dt);
 	void draw();

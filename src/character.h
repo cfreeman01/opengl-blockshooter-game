@@ -9,18 +9,18 @@
 class Game;
 
 //base class representing a player or enemy object
-class character : public gameObject
+class Character : public GameObject
 {
 public:
 	struct Bullet
 	{ //a data structure representing a single bullet along with its particle trail
-		gameObject *bullet;
-		trailGenerator trail;
+		GameObject *bullet;
+		TrailGenerator trail;
 
-		Bullet(gameObject *inBullet, SpriteRenderer *renderer, std::vector<glm::vec4> colors)
+		Bullet(GameObject *inBullet, SpriteRenderer *renderer, std::vector<glm::vec4> colors)
 		{
 			bullet = inBullet;
-			trail = trailGenerator(*bullet, *renderer, 0.1f, 0.04f, colors);
+			trail = TrailGenerator(*bullet, *renderer, 0.1f, 0.04f, colors);
 		}
 	};
 
@@ -36,9 +36,9 @@ protected:
 	
 public:
 	//constructors/destructors
-	character();
-	character(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game);
-	~character();
+	Character();
+	Character(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game);
+	~Character();
 
 	//bullets
 	virtual void moveBullets(float dt);

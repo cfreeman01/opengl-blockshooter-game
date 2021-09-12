@@ -3,15 +3,15 @@
 #include "resource_manager.h"
 #include <GLFW/glfw3.h>
 
-SoLoud::Wav enemy1::damageAudio;
-SoLoud::Wav enemy1::deathAudio;
-SoLoud::Wav enemy1::shootAudio;
+SoLoud::Wav Enemy1::damageAudio;
+SoLoud::Wav Enemy1::deathAudio;
+SoLoud::Wav Enemy1::shootAudio;
 
-enemy1::enemy1()
-	: enemy() {}
+Enemy1::Enemy1()
+	: Enemy() {}
 
-enemy1::enemy1(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game)
-	: enemy(pos, size, sprite, color, velocity, renderer, game)
+Enemy1::Enemy1(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game)
+	: Enemy(pos, size, sprite, color, velocity, renderer, game)
 {
 	//textures must be loaded first
 	sprites.push_back(ResourceManager::GetTexture("enemy1_1"));
@@ -31,7 +31,7 @@ enemy1::enemy1(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color,
 	bulletSize = game.Width / 90.0f;
 }
 
-void enemy1::loadTextures()
+void Enemy1::loadTextures()
 {
 	ResourceManager::LoadTexture("textures/enemy1_1.png", true, "enemy1_1");
 	ResourceManager::LoadTexture("textures/enemy1_2.png", true, "enemy1_2");
@@ -40,17 +40,17 @@ void enemy1::loadTextures()
 	ResourceManager::LoadTexture("textures/enemy1_death3.png", true, "enemy1_death3");
 }
 
-void enemy1::loadAudio()
+void Enemy1::loadAudio()
 {
 	damageAudio.load("audio/enemy_hit.wav");
 	deathAudio.load("audio/enemy_death.wav");
 	shootAudio.load("audio/enemy1_gunshot.wav");
 }
 
-bool enemy1::fire(glm::vec2 playerPos)
+bool Enemy1::fire(glm::vec2 playerPos)
 {
 	game->audioEngine->play(shootAudio);
-	bullets.push_back(Bullet(new gameObject(this->Position, glm::vec2(bulletSize), //fire a bullet directly toward the player
+	bullets.push_back(Bullet(new GameObject(this->Position, glm::vec2(bulletSize), //fire a bullet directly toward the player
 											ResourceManager::GetTexture("bullet"), bulletColor, glm::normalize(playerPos - this->Position)),
 							 renderer, std::vector<glm::vec4>(1, bulletColor)));
 	bullets.back().trail.init();
@@ -61,14 +61,14 @@ bool enemy1::fire(glm::vec2 playerPos)
 	return false;
 }
 
-void enemy1::move(float dt, glm::vec2 playerPos)
+void Enemy1::move(float dt, glm::vec2 playerPos)
 {
 	if (Position.x <= finalXPosition)
 		return; //this enemy simply moves right until reaching its final x position
 	Position.x -= Velocity.x * dt;
 }
 
-void enemy1::resolveCollision()
+void Enemy1::resolveCollision()
 { //called when player shoots the enemy
 	hp--;
 	damageTime = glfwGetTime();

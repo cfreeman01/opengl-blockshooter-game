@@ -2,7 +2,7 @@
 #include "enemy.h"
 
 //this enemy acts as a spawner for the "enemy3_mask" enemy type
-class enemy3 : public enemy {
+class Enemy3 : public Enemy {
 private:
 	//movement
 	void move(float dt, glm::vec2 playerPos);
@@ -14,8 +14,8 @@ private:
 
 public:
 	//constructors
-	enemy3();
-	enemy3(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer& renderer, Game& game);
+	Enemy3();
+	Enemy3(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer& renderer, Game& game);
 
 	static void loadTextures();
 	static void loadAudio();

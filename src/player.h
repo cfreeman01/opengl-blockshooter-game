@@ -1,12 +1,11 @@
 #pragma once
 #include "character.h"
-#include "playerObject.h"
 #include "spriteRenderer.h"
 #include "soloud.h"
 #include "soloud_wav.h"
 #include <vector>
 
-class playerObject : public character
+class Player : public Character
 {
 private:
 	//hp and damage
@@ -18,7 +17,7 @@ private:
 	float powerupTime = 0.0f;
 
 	//trail generator
-	trailGenerator *playerTrail;
+	TrailGenerator *playerTrail;
 
 	//bullets
 	float fireDelay;
@@ -32,9 +31,9 @@ private:
 
 public:
 	//constructors/destructors
-	playerObject();
-	playerObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game);
-	~playerObject();
+	Player();
+	Player(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game);
+	~Player();
 
 	//accessors/mutators
 	int getHP() { return hp; }

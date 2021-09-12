@@ -19,5 +19,4 @@ include_directories(${PROJECT_NAME} PUBLIC include)
 
 #build and link GLFW
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/glfw-3.3.4/)
-
 target_link_libraries(${PROJECT_NAME} PUBLIC glfw)

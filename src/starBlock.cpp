@@ -1,21 +1,21 @@
 #include <string>
 #include "starBlock.h"
-#include "playerObject.h"
+#include "player.h"
 #include "resource_manager.h"
 #include "spriteRenderer.h"
 
-starBlock::starBlock()
-	: blockObject() {}
+StarBlock::StarBlock()
+	: Block() {}
 
-starBlock::starBlock(glm::vec2 pos, glm::vec2 size, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer)
-	: blockObject(pos, size, ResourceManager::GetTexture("starBlock4"), color, velocity, renderer, false)
+StarBlock::StarBlock(glm::vec2 pos, glm::vec2 size, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer)
+	: Block(pos, size, ResourceManager::GetTexture("starBlock4"), color, velocity, renderer, false)
 {
 	durability = 4; //durability: 4:max, 3,2: cracked
 					//1:block is broken and powerup can be picked up
 					//0:block destroyed & health pickup gone
 }
 
-int starBlock::crack(Game* game)
+int StarBlock::crack(Game* game)
 {
 	if (durability > 1)
 	{ //if block is not broken
@@ -39,13 +39,13 @@ int starBlock::crack(Game* game)
 	return durability;
 }
 
-void starBlock::resolvePlayerCollision(playerObject &Player)
+void StarBlock::resolvePlayerCollision(Player &currentPlayer)
 {
 	if (durability == 1)
 	{					  //if the powerup is spawned
-		Player.powerUp(); //power up the player
+		currentPlayer.powerUp(); //power up the player
 		durability = 0;	  //and change durability to 0 to indicate the object is destroyed
 	}
 	else
-		Player.resolveCollision(); //otherwise just damage the player
+		currentPlayer.resolveCollision(); //otherwise just damage the player
 }

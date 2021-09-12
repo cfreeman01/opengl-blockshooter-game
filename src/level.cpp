@@ -1,7 +1,7 @@
 #include "level.h"
 #include "monkeyBoss.h"
-#include "blockObject.h"
-#include "playerObject.h"
+#include "block.h"
+#include "player.h"
 #include "healthBlock.h"
 #include "starBlock.h"
 #include "game.h"
@@ -55,7 +55,7 @@ void level::addRow()
 	if (game.elapsedTime >= (bossSpawnTime - 10))
 		return;
 	srand(time(0));
-	blocks.push_front(std::list<blockObject *>());
+	blocks.push_front(std::list<Block *>());
 	for (int i = 0; i < 15; i++)
 	{
 
@@ -63,7 +63,7 @@ void level::addRow()
 		{ //add normal or unbreakable block
 			if (rand() % 100 > 15)
 			{ //normal
-				blocks.front().push_back(new blockObject(glm::vec2(game.Width + blockSize, i * blockSize),
+				blocks.front().push_back(new Block(glm::vec2(game.Width + blockSize, i * blockSize),
 														 glm::vec2(blockSize, blockSize),
 														 ResourceManager::GetTexture("block3"),
 														 blockColors[rand() % 6],
@@ -71,7 +71,7 @@ void level::addRow()
 			}
 			else
 			{ //unbreakable
-				blocks.front().push_back(new blockObject(glm::vec2(game.Width + blockSize, i * blockSize),
+				blocks.front().push_back(new Block(glm::vec2(game.Width + blockSize, i * blockSize),
 														 glm::vec2(blockSize),
 														 ResourceManager::GetTexture("blocku"),
 														 glm::vec4(0.7f, 0.7f, 0.7f, 1.0f),
@@ -80,14 +80,14 @@ void level::addRow()
 		}
 		else if (rand() % 200 >= 199)
 		{ //add health block
-			blocks.front().push_back(new healthBlock(glm::vec2(game.Width + blockSize, i * blockSize),
+			blocks.front().push_back(new HealthBlock(glm::vec2(game.Width + blockSize, i * blockSize),
 													 glm::vec2(blockSize),
 													 glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
 													 glm::vec2(0.0f, 0.0f), *Renderer));
 		}
 		else if (rand() % 400 >= 399)
 		{ //add star block
-			blocks.front().push_back(new starBlock(glm::vec2(game.Width + blockSize, i * blockSize),
+			blocks.front().push_back(new StarBlock(glm::vec2(game.Width + blockSize, i * blockSize),
 												   glm::vec2(blockSize),
 												   glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
 												   glm::vec2(0.0f, 0.0f), *Renderer));
@@ -95,7 +95,7 @@ void level::addRow()
 	}
 	if (blocks.front().empty())
 	{ //each row should have at least one block
-		blocks.front().push_back(new blockObject(glm::vec2(game.Width + blockSize, rand() % 15 * blockSize),
+		blocks.front().push_back(new Block(glm::vec2(game.Width + blockSize, rand() % 15 * blockSize),
 												 glm::vec2(blockSize, blockSize),
 												 ResourceManager::GetTexture("block3"),
 												 blockColors[rand() % 6],
@@ -163,7 +163,7 @@ void level::updateEnemies(float dt, glm::vec2 playerPos)
 		{ //if so, spawn a new "mask" enemy
 			glm::vec2 size     = glm::vec2(game.Width/22.5f, game.Width/28.0f);
 			glm::vec2 velocity = glm::vec2(game.Width/6.0f);
-			enemies.push_back(new enemy3_mask(enemies[i]->Position + glm::vec2(enemies[i]->Size.x / 2, enemies[i]->Size.y / 2),
+			enemies.push_back(new Enemy3_Mask(enemies[i]->Position + glm::vec2(enemies[i]->Size.x / 2, enemies[i]->Size.y / 2),
 											  size, ResourceManager::GetTexture("mask"), glm::vec3(1.0f, 1.0f, 1.0f),
 											  velocity, *Renderer, game));
 		}
@@ -183,7 +183,7 @@ void level::updateEnemies(float dt, glm::vec2 playerPos)
 				{
 					glm::vec2 size     = glm::vec2(game.Width/22.5f);
 					glm::vec2 velocity = glm::vec2(game.Width/9.0f);
-					enemies.push_back(new enemy1(glm::vec2(game.Width + size.x, size.y + rand() % (game.playAreaHeight - 2*(int)size.y)),
+					enemies.push_back(new Enemy1(glm::vec2(game.Width + size.x, size.y + rand() % (game.playAreaHeight - 2*(int)size.y)),
 												 size, ResourceManager::GetTexture("enemy1_1"), glm::vec3(1.0f, 1.0f, 1.0f),
 												 velocity, *Renderer, game));
 				}
@@ -191,7 +191,7 @@ void level::updateEnemies(float dt, glm::vec2 playerPos)
 				{
 					glm::vec2 size     = glm::vec2(game.Width/22.5f, game.Width/30);
 					glm::vec2 velocity = glm::vec2(game.Width/12.0f);
-					enemies.push_back(new enemy2(glm::vec2(game.Width + size.x, size.y + rand() % (game.playAreaHeight - 2*(int)size.y)),
+					enemies.push_back(new Enemy2(glm::vec2(game.Width + size.x, size.y + rand() % (game.playAreaHeight - 2*(int)size.y)),
 												 size, ResourceManager::GetTexture("enemy2_1"), glm::vec3(1.0f, 1.0f, 1.0f),
 												 velocity, *Renderer, game));
 				}
@@ -199,7 +199,7 @@ void level::updateEnemies(float dt, glm::vec2 playerPos)
 				{
 					glm::vec2 size     = glm::vec2(game.Width/16.6f, game.Width/18);
 					glm::vec2 velocity = glm::vec2(game.Width/15.0f);
-					enemies.push_back(new enemy3(glm::vec2(game.Width + size.x, size.y + rand() % (game.playAreaHeight - 2*(int)size.y)),
+					enemies.push_back(new Enemy3(glm::vec2(game.Width + size.x, size.y + rand() % (game.playAreaHeight - 2*(int)size.y)),
 												 size, ResourceManager::GetTexture("enemy3_1"), glm::vec3(1.0f, 1.0f, 1.0f),
 												 velocity, *Renderer, game));
 				}
@@ -239,7 +239,7 @@ void level::updateEnemies(float dt, glm::vec2 playerPos)
 	//possibly spawn boss
 	if (game.elapsedTime >= bossSpawnTime && finalBoss == nullptr)
 	{
-		finalBoss = new monkeyBoss(game, *Renderer);
+		finalBoss = new MonkeyBoss(game, *Renderer);
 	}
 }
 void level::renderEnemies()
@@ -273,7 +273,7 @@ void level::increaseDifficulty()
 
 //checks if blocks and enemies have collided with the player's bullets
 //returns an array of booleans to denote which bullets have been collided with
-std::vector<bool> level::checkBulletsCollisions(std::vector<character::Bullet> bulletInfo)
+std::vector<bool> level::checkBulletsCollisions(std::vector<Character::Bullet> bulletInfo)
 {
 	std::vector<bool> collisions(bulletInfo.size(), false);
 
@@ -333,7 +333,7 @@ std::vector<bool> level::checkBulletsCollisions(std::vector<character::Bullet> b
 }
 
 //check player collision with blocks and enemies
-void level::checkPlayerCollisions(playerObject *Player)
+void level::checkPlayerCollisions(Player *Player)
 {
 	//check player/block collisions
 	for (auto row = blocks.rbegin(); row != blocks.rend(); row++)
@@ -349,7 +349,7 @@ void level::checkPlayerCollisions(playerObject *Player)
 	}
 
 	//check player/enemy and player/enemybullet collisions
-	std::vector<character::Bullet> enemyBullets;
+	std::vector<Character::Bullet> enemyBullets;
 	for (int i = 0; i < enemies.size(); i++)
 	{
 		if (checkCollisionSAT(*Player, *enemies[i]) && enemies[i]->deathState == 0)
@@ -377,7 +377,7 @@ void level::checkPlayerCollisions(playerObject *Player)
 			Player->resolveCollision();
 			return;
 		}
-		std::vector<gameObject> &bossBullets = finalBoss->getBulletInfo();
+		std::vector<GameObject> &bossBullets = finalBoss->getBulletInfo();
 		for (int i = 0; i < bossBullets.size(); i++)
 		{
 			if (checkCollisionSAT(*Player, bossBullets[i]))
@@ -390,7 +390,7 @@ void level::checkPlayerCollisions(playerObject *Player)
 }
 
 //check collision of two game objects by separating axis theorem
-bool level::checkCollisionSAT(gameObject &o1, gameObject &o2)
+bool level::checkCollisionSAT(GameObject &o1, GameObject &o2)
 {
 	//get vertices of the objects
 	std::vector<glm::vec2> v1 = o1.getVertices();

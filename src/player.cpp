@@ -1,4 +1,4 @@
-#include "playerObject.h"
+#include "player.h"
 #include "game.h"
 #include "spriteRenderer.h"
 #include "resource_manager.h"
@@ -7,11 +7,11 @@
 #include <GLFW/glfw3.h>
 
 //CONSTRUCTORS
-playerObject::playerObject()
-	: character(), hp(3), fireDelay(0.5), playerTrail(nullptr) {}
+Player::Player()
+	: Character(), hp(3), fireDelay(0.5), playerTrail(nullptr) {}
 
-playerObject::playerObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game)
-	: character(pos, size, sprite, color, velocity, renderer, game)
+Player::Player(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game)
+	: Character(pos, size, sprite, color, velocity, renderer, game)
 {
 
 	bulletColors.push_back(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -26,7 +26,7 @@ playerObject::playerObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm:
 	bulletSpeed = game.Width / 0.9f;
 	bulletSize = game.Width / 90.0f;
 
-	playerTrail = new trailGenerator(*this, renderer, 0.1f, 0.1f, bulletColors);
+	playerTrail = new TrailGenerator(*this, renderer, 0.1f, 0.1f, bulletColors);
 	playerTrail->init();
 
 	shootAudio.load("audio/gunshot.wav");
@@ -35,13 +35,13 @@ playerObject::playerObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm:
 	healthupAudio.load("audio/hp_gain.wav");
 }
 
-playerObject::~playerObject()
+Player::~Player()
 {
 	delete playerTrail;
 }
 
 //return vertices representing the hitbox for the player object
-std::vector<glm::vec2> playerObject::getVertices()
+std::vector<glm::vec2> Player::getVertices()
 {
 	std::vector<glm::vec2> vertices;
 	vertices.push_back(glm::vec4(Position.x + Size.x / 2, Position.y, 0.0f, 1.0f));		 //top vertex
@@ -51,7 +51,7 @@ std::vector<glm::vec2> playerObject::getVertices()
 }
 
 //process keyboard input
-void playerObject::move(float dt, glm::vec2 cursorPos)
+void Player::move(float dt, glm::vec2 cursorPos)
 {
 	//move player object with keys
 	if (game->Keys[GLFW_KEY_A])
@@ -86,7 +86,7 @@ void playerObject::move(float dt, glm::vec2 cursorPos)
 	playerTrail->update(dt);
 }
 
-void playerObject::fire(glm::vec2 cursorPos, float dt)
+void Player::fire(glm::vec2 cursorPos, float dt)
 {
 	if (fireUpdate < fireDelay)
 		return;
@@ -94,7 +94,7 @@ void playerObject::fire(glm::vec2 cursorPos, float dt)
 
 	SoLoud::handle h = game->audioEngine->play(shootAudio);
 
-	bullets.push_back(Bullet(new gameObject(this->Position, glm::vec2(bulletSize), ResourceManager::GetTexture("bullet"),
+	bullets.push_back(Bullet(new GameObject(this->Position, glm::vec2(bulletSize), ResourceManager::GetTexture("bullet"),
 											bulletColors[rand() % bulletColors.size()], glm::normalize(cursorPos - this->Position)),
 							 renderer, bulletColors));
 	bullets.back().trail.init();
@@ -104,7 +104,7 @@ void playerObject::fire(glm::vec2 cursorPos, float dt)
 	bullets.back().bullet->Rotation = this->Rotation;
 }
 
-void playerObject::resolveCollision()
+void Player::resolveCollision()
 {
 	if (glfwGetTime() - damageTime > damageCooldown)
 	{
@@ -118,20 +118,20 @@ void playerObject::resolveCollision()
 		}
 	}
 }
-void playerObject::increaseHP()
+void Player::increaseHP()
 {
 	if (hp < 3)
 		hp++;
 	game->audioEngine->play(healthupAudio);
 }
-void playerObject::powerUp()
+void Player::powerUp()
 {								 //picking up a powerup decreases fireDelay,
 	powerupTime = glfwGetTime(); //allowing the player to fire more rapidly
 	fireDelay = 0.15f;
 	game->audioEngine->play(powerupAudio);
 }
 
-void playerObject::Draw()
+void Player::Draw()
 {
 	float currentTime = glfwGetTime();
 	//change color back to normal after taking damage
@@ -146,7 +146,7 @@ void playerObject::Draw()
 }
 
 //reset player's state after game over
-void playerObject::reset()
+void Player::reset()
 {
 	Position = glm::vec2(400.0f, 400.0f);
 	bullets.clear();

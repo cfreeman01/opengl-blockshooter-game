@@ -1,18 +1,18 @@
 #include "character.h"
 #include "game.h"
 
-character::character()
-	: gameObject(), game(nullptr), renderer(nullptr) {}
+Character::Character()
+	: GameObject(), game(nullptr), renderer(nullptr) {}
 
-character::character(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game)
-	: gameObject(pos, size, sprite, color, velocity)
+Character::Character(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game)
+	: GameObject(pos, size, sprite, color, velocity)
 {
 	this->renderer = &renderer;
 	this->game = &game;
 	bullets.reserve(500);
 }
 
-character::~character()
+Character::~Character()
 {
 	for (int i = 0; i < bullets.size(); i++)
 	{
@@ -20,7 +20,7 @@ character::~character()
 	}
 }
 
-void character::renderBullets()
+void Character::renderBullets()
 {
 	for (unsigned int i = 0; i < bullets.size(); i++)
 	{
@@ -29,7 +29,7 @@ void character::renderBullets()
 	}
 }
 
-void character::moveBullets(float dt)
+void Character::moveBullets(float dt)
 {
 	fireUpdate += dt;
 	for (unsigned int i = 0; i < bullets.size(); i++)
@@ -49,14 +49,14 @@ void character::moveBullets(float dt)
 
 //COLLISION DETECTION
 //return a reference to bullets to be used for collision detection
-std::vector<character::Bullet> &character::getBulletInfo()
+std::vector<Character::Bullet> &Character::getBulletInfo()
 {
 	return bullets;
 }
 
 //accepts a vector of booleans that indicates which bullets have collided with an object
 //and destroys the appropriate bullets
-void character::destroyBullets(std::vector<bool> collisions)
+void Character::destroyBullets(std::vector<bool> collisions)
 {
 	for (int i = 0; i < bullets.size(); i++)
 	{

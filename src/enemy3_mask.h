@@ -2,16 +2,16 @@
 #include "enemy.h"
 
 //FORWARD DECLARATIONS
-class trailGenerator;
+class TrailGenerator;
 
 //this enemy is spawned by the "enemy3" type and moves aggresively toward the player
-class enemy3_mask : public enemy
+class Enemy3_Mask : public Enemy
 {
 private:
 	//movement
 	void move(float dt, glm::vec2 playerPos);
 	//trail
-	trailGenerator *enemyTrail;
+	TrailGenerator *enemyTrail;
 
 	//audio
 	static SoLoud::Wav damageAudio;
@@ -19,9 +19,9 @@ private:
 
 public:
 	//constructors
-	enemy3_mask();
-	enemy3_mask(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game);
-	~enemy3_mask();
+	Enemy3_Mask();
+	Enemy3_Mask(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game);
+	~Enemy3_Mask();
 
 	static void loadTextures();
 	static void loadAudio();

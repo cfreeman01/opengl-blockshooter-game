@@ -3,19 +3,19 @@
 #include <GLFW/glfw3.h>
 
 //constructors
-enemy::enemy()
-	: character(), spriteIndex(0), hp(0) {}
+Enemy::Enemy()
+	: Character(), spriteIndex(0), hp(0) {}
 
-enemy::enemy(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game)
-	: character(pos, size, sprite, color, velocity, renderer, game) {}
+Enemy::Enemy(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, glm::vec2 velocity, SpriteRenderer &renderer, Game &game)
+	: Character(pos, size, sprite, color, velocity, renderer, game) {}
 
 //animate the enemy by updating the sprite after a set interval
-void enemy::updateSprite()
+void Enemy::updateSprite()
 {
 	Sprite = sprites[(++spriteIndex) % sprites.size()];
 }
 
-bool enemy::updateState(float dt, glm::vec2 playerPos)
+bool Enemy::updateState(float dt, glm::vec2 playerPos)
 {
 	bool ret = false;
 
@@ -53,13 +53,13 @@ bool enemy::updateState(float dt, glm::vec2 playerPos)
 	return ret;
 }
 
-void enemy::destroyBullet(int index)
+void Enemy::destroyBullet(int index)
 {
 	delete bullets[index].bullet;
 	bullets.erase(bullets.begin() + index);
 }
 
-void enemy::Draw()
+void Enemy::Draw()
 {
 	//change color back to normal after taking damage
 	if (glfwGetTime() - damageTime > 0.5)
