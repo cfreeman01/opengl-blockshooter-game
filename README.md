@@ -4,11 +4,10 @@ A simple 2D shooter game made with C++ and OpenGL
 
 ![gameplay video](gameplay.gif)
   ## Features
-  - :trophy: Award-winning graphics and sound design
-  - :skull_and_crossbones: Several unique enemy types
-  - :smiling_imp: Epic boss fights
-  - :clock4: Endless gameplay with steadily increasing difficulty
-  - :rainbow: Rainbow colors!
+  - A system to render sprites as well as 3D models
+  - Randomized obstacles, enemies, health pickups, and powerups
+  - Graphical effects like animations and particle effects
+  - A special boss level
   ## Building and Running
   - Use CMake to generate build files, all dependencies are included
     - Unix-like systems may require additional packages for GLFW as described [here](https://www.glfw.org/docs/latest/compile_guide.html#compile_deps_x11)
